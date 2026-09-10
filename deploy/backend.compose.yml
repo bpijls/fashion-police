@@ -1,4 +1,5 @@
 # Fashion Police — backend gateway.
+name: fashion-police
 #
 # Runs on the reverse-proxy host, behind Caddy Docker Proxy. Reaches the compute
 # tier over the private network (COMPUTE_URL in .env).

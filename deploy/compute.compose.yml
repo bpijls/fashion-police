@@ -1,4 +1,5 @@
 # Fashion Police — compute tier.
+name: fashion-police
 #
 # Runs on the CUDA host. Publish the port on the host's private / VPN address
 # only (COMPUTE_BIND_ADDR) so the service is reachable from the backend but not
