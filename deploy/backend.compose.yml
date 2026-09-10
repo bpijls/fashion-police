@@ -1,0 +1,46 @@
+# Fashion Police — backend gateway.
+#
+# Runs on the reverse-proxy host, behind Caddy Docker Proxy. Reaches the compute
+# tier over the private network (COMPUTE_URL in .env).
+#
+#   # from the repo root, with a filled-in .env:
+#   docker compose --env-file .env -f deploy/backend.compose.yml up -d --build
+#
+# Requires the YuNet model on the host (scripts/download-models.sh) — it is
+# mounted read-only, not baked into the image.
+
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    image: fashion-police-backend:latest
+    restart: unless-stopped
+    environment:
+      COMPUTE_URL: ${COMPUTE_URL:?set COMPUTE_URL in .env}
+      COMPUTE_SECRET: ${COMPUTE_SECRET:?set COMPUTE_SECRET in .env}
+      KIOSK_TOKEN: ${KIOSK_TOKEN:-}
+      RETENTION_DAYS: ${RETENTION_DAYS:-14}
+      FP_BACKEND_FACE_CHECK: ${FP_BACKEND_FACE_CHECK:-required}
+    volumes:
+      - ../models/face_detection_yunet_2023mar.onnx:/models/face_detection_yunet_2023mar.onnx:ro
+      - fp_backend_data:/srv/data
+    ports:
+      # reverse proxy reaches it on the loopback / private address
+      - "${BACKEND_BIND_ADDR:-127.0.0.1}:${BACKEND_PORT:-8800}:8800"
+    networks:
+      - default
+      - caddy
+    labels:
+      caddy: ${APP_DOMAIN:?set APP_DOMAIN in .env}
+      caddy.reverse_proxy: "{{upstreams 8800}}"
+      caddy_docker_network: ${CADDY_NETWORK:?set CADDY_NETWORK in .env}
+
+networks:
+  caddy:
+    external: true
+    name: ${CADDY_NETWORK}
+  default: {}
+
+volumes:
+  fp_backend_data:

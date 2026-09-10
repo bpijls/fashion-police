@@ -8,8 +8,8 @@ Three separate tiers:
 | Tier | Runs on | Stack | Status |
 |---|---|---|---|
 | **`compute/`** | a CUDA host | FastAPI · SegFormer · FashionCLIP (zero-shot) | ✅ built · deployed |
-| **`backend/`** | the reverse-proxy host | FastAPI gateway · SQLite · face verify-and-discard | ⬜ next |
-| **`frontend/`** | the kiosk device (browser only) | React · TF.js MoveNet · client-side face redaction | ⬜ after |
+| **`backend/`** | the reverse-proxy host | FastAPI gateway · SQLite · YuNet face verify-and-discard | ✅ built |
+| **`frontend/`** | the kiosk device (browser only) | React · TF.js MoveNet · client-side face redaction | ⬜ next |
 
 The kiosk device runs **only a browser**. The camera frame is redacted **in the
 browser** (face blacked out) before anything is sent — the raw image never leaves
