@@ -55,6 +55,48 @@ ahead of time:
 
 Deploy manifests are in `deploy/`.
 
+## Deploy — edge tier (backend + frontend)
+
+The edge tier runs on a host reached over SSH that already runs a
+[Caddy Docker Proxy](https://github.com/lucaslorentz/caddy-docker-proxy) on an
+external ingress network. All host-specific values stay in `.env`.
+
+```bash
+ssh <edge-host>
+git clone git@github.com:bpijls/fashion-police.git && cd fashion-police
+
+# 1. config — never commit this file
+cp .env.example .env
+#    fill in at least:
+#      COMPUTE_URL      — where the backend reaches the compute tier
+#      COMPUTE_SECRET   — shared secret the compute host expects
+#      APP_DOMAIN       — public hostname Caddy should serve
+#      CADDY_NETWORK    — name of the Caddy ingress network (e.g. proxy)
+
+# 2. the backend needs the YuNet face detector as a plain file
+mkdir -p models
+curl -fL -o models/face_detection_yunet_2023mar.onnx \
+  https://huggingface.co/opencv/face_detection_yunet/resolve/main/face_detection_yunet_2023mar.onnx
+
+# 3. build + start (the --env-file flag is required: compose otherwise
+#    looks for .env next to the manifest, in deploy/)
+docker compose --env-file .env -f deploy/edge.compose.yml up -d --build
+```
+
+Caddy picks up the container labels, routes `APP_DOMAIN`, and issues a TLS
+certificate automatically. Verify:
+
+```bash
+curl -s https://$APP_DOMAIN/api/v1/health      # {"backend":"ok","compute":"ok",...}
+```
+
+Redeploy after a change:
+
+```bash
+ssh <edge-host> 'cd fashion-police && git pull \
+  && docker compose --env-file .env -f deploy/edge.compose.yml up -d --build'
+```
+
 ## Layout
 
 ```
