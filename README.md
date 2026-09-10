@@ -8,8 +8,12 @@ Three separate tiers:
 | Tier | Runs on | Stack | Status |
 |---|---|---|---|
 | **`compute/`** | a CUDA host | FastAPI · SegFormer · FashionCLIP (zero-shot) | ✅ built · deployed |
-| **`backend/`** | the reverse-proxy host | FastAPI gateway · SQLite · YuNet face verify-and-discard | ✅ built |
-| **`frontend/`** | the kiosk device (browser only) | React · TF.js MoveNet · client-side face redaction | ⬜ next |
+| **`backend/`** | the reverse-proxy host | FastAPI gateway · SQLite · YuNet face verify-and-discard | ✅ built · deployed |
+| **`frontend/`** | the kiosk device (browser only) | React · TF.js MoveNet + BlazeFace · client-side face redaction | ✅ built · deployed |
+
+The whole chain is live end-to-end: kiosk browser → Caddy → frontend (SPA +
+`/api` proxy) → backend → compute. Verified with a fake camera driving a real
+capture, redaction, prediction, and feedback.
 
 The kiosk device runs **only a browser**. The camera frame is redacted **in the
 browser** (face blacked out) before anything is sent — the raw image never leaves
@@ -54,13 +58,16 @@ Deploy manifests are in `deploy/`.
 ## Layout
 
 ```
-compute/    inference service (SegFormer + FashionCLIP)
-backend/    API gateway            (stage 2)
-frontend/   kiosk app              (stage 3)
+compute/    inference service (SegFormer + FashionCLIP)   deploy/compute.compose.yml
+backend/    API gateway (validation, face check, storage)  deploy/edge.compose.yml
+frontend/   kiosk SPA (camera, redaction, result)          deploy/edge.compose.yml
 deploy/     docker compose manifests
-scripts/    helper scripts
+scripts/    helper scripts (download-models.sh)
 styles.yaml the taxonomy
 ```
+
+`compute` runs on a CUDA host; `backend` + `frontend` run together on the
+reverse-proxy host behind Caddy.
 
 The `studio-rai-group-project-HX1R/` and `fp2/` directories are earlier
 implementations kept for reference and are gitignored.

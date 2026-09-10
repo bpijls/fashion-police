@@ -33,6 +33,7 @@ node_modules/
 dist/
 build/
 .vite/
+frontend/public/models/
 
 # ── runtime data ──────────────────────────────────────────────
 /backend/data/

@@ -1,0 +1,21 @@
+# Served inside the frontend container. The outer Caddy Docker Proxy points the
+# public hostname here; this file serves the SPA and proxies the API so the
+# kiosk sees a single origin (no CORS).
+:80 {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy {$BACKEND_UPSTREAM:backend:8800}
+	}
+
+	handle {
+		root * /srv/www
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		# getUserMedia needs a secure context; the outer proxy terminates TLS.
+		-Server
+	}
+}

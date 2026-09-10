@@ -97,4 +97,9 @@ else
   echo "  have  $YUNET_FILE"
 fi
 
+# The kiosk's TF.js detectors (MoveNet, BlazeFace) are loaded by the
+# @tensorflow-models libraries at runtime and cached in the browser. Bundling
+# them for a fully-offline kiosk is optional and done separately — see
+# frontend/README.md ("Offline model bundling").
+
 echo "done."
