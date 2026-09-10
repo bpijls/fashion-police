@@ -67,10 +67,30 @@ Pre-fetch the weights instead of waiting on the first request:
 
 ## Deploy (on the CUDA host)
 
+The compute host keeps its **own** `.env` (hostnames / bind address / secret are
+per-host) — sync the code but not `.env`:
+
 ```bash
-# from the repo root, with a filled-in .env
+rsync -az --delete \
+  --exclude '.git/' --exclude '.venv/' --exclude 'compute/.venv/' \
+  --exclude 'models/' --exclude '.env' \
+  ./ <cuda-host>:fashion-police/
+
+ssh <cuda-host>
+cd fashion-police
+cp .env.example .env      # first time — then set:
+#   COMPUTE_SECRET=<same value the backend will use>
+#   COMPUTE_BIND_ADDR=<host's private/VPN address>   # not 0.0.0.0
 docker compose --env-file .env -f deploy/compute.compose.yml up -d --build
 ```
 
-Bump the `nvcr.io/nvidia/pytorch` tag in `compute/Dockerfile` if the pinned one
-predates the host GPU's arch.
+Notes:
+
+- **Base image:** use the datacenter `nvcr.io/nvidia/pytorch:<tag>-py3`. The
+  `-igpu` tags are Jetson/Orin builds (`sm_87` only) and will not run on a
+  Grace-Blackwell GB10 (`sm_121`). Override per host with
+  `--build-arg BASE_IMAGE=…` or in the Dockerfile.
+- Weights persist in the `fp_hf_cache` volume across `down`/`up` (not `down -v`).
+- Warm inference on a GB10 is ~60 ms total (segmentation ~50, scoring ~10);
+  the first request after start is slower (model warm-up).
+- `restart: unless-stopped` — the service comes back after a host reboot.

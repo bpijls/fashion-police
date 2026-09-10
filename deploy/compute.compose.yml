@@ -13,8 +13,8 @@
 services:
   compute:
     build:
-      context: ..
-      dockerfile: compute/Dockerfile
+      context: ../compute
+      dockerfile: Dockerfile
     image: fashion-police-compute:latest
     restart: unless-stopped
     environment:

@@ -1,9 +1,10 @@
 # Fashion Police — compute tier.
-# Runs on the CUDA host (e.g. an NVIDIA DGX Spark: ARM64 + CUDA). The NGC PyTorch
-# image ships a CUDA-enabled torch/torchvision built for recent GPU archs, which
-# is the reliable path for ARM64 + Blackwell. Bump the tag as NGC releases newer
-# builds.
-FROM nvcr.io/nvidia/pytorch:25.01-py3
+# Runs on the CUDA host (e.g. an NVIDIA DGX Spark: ARM64 + Grace-Blackwell GB10).
+# Use the datacenter NGC PyTorch image (the "-igpu" tags are Jetson/Orin builds,
+# compiled only for sm_87 and will not run on GB10 / sm_121). Bump BASE_IMAGE as
+# NGC releases newer builds.
+ARG BASE_IMAGE=nvcr.io/nvidia/pytorch:26.01-py3
+FROM ${BASE_IMAGE}
 
 ENV PYTHONUNBUFFERED=1 \
     HF_HOME=/models \

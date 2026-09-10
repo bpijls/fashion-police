@@ -7,7 +7,7 @@ Three separate tiers:
 
 | Tier | Runs on | Stack | Status |
 |---|---|---|---|
-| **`compute/`** | a CUDA host | FastAPI · SegFormer · FashionCLIP (zero-shot) | ✅ built |
+| **`compute/`** | a CUDA host | FastAPI · SegFormer · FashionCLIP (zero-shot) | ✅ built · deployed |
 | **`backend/`** | the reverse-proxy host | FastAPI gateway · SQLite · face verify-and-discard | ⬜ next |
 | **`frontend/`** | the kiosk device (browser only) | React · TF.js MoveNet · client-side face redaction | ⬜ after |
 
