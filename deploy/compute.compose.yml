@@ -1,0 +1,49 @@
+# Fashion Police — compute tier.
+#
+# Runs on the CUDA host. Publish the port on the host's private / VPN address
+# only (COMPUTE_BIND_ADDR) so the service is reachable from the backend but not
+# from the public internet.
+#
+#   # from the repo root, with a filled-in .env:
+#   docker compose --env-file .env -f deploy/compute.compose.yml up -d --build
+#
+# First boot downloads the model weights into the fp_hf_cache volume (or run
+# scripts/download-models.sh beforehand).
+
+services:
+  compute:
+    build:
+      context: ..
+      dockerfile: compute/Dockerfile
+    image: fashion-police-compute:latest
+    restart: unless-stopped
+    environment:
+      FP_COMPUTE_DEVICE: ${FP_COMPUTE_DEVICE:-auto}
+      FP_COMPUTE_SCORER: ${FP_COMPUTE_SCORER:-fashionclip}
+      FP_COMPUTE_SEGMENTATION_MODEL: ${FP_COMPUTE_SEGMENTATION_MODEL:-mattmdjaga/segformer_b2_clothes}
+      FP_COMPUTE_STYLE_MODEL: ${FP_COMPUTE_STYLE_MODEL:-patrickjohncyh/fashion-clip}
+      FP_COMPUTE_UNCERTAIN_BELOW: ${FP_COMPUTE_UNCERTAIN_BELOW:-0.22}
+      FP_COMPUTE_MAX_IMAGE_EDGE: ${FP_COMPUTE_MAX_IMAGE_EDGE:-1024}
+      FP_COMPUTE_SECRET: ${COMPUTE_SECRET:?set COMPUTE_SECRET in .env}
+      FP_COMPUTE_STYLES_PATH: /config/styles.yaml
+      HF_HOME: /models
+      HF_TOKEN: ${HF_TOKEN:-}
+    volumes:
+      - ../styles.yaml:/config/styles.yaml:ro
+      - fp_hf_cache:/models
+    ports:
+      # host private/VPN address only — never 0.0.0.0
+      - "${COMPUTE_BIND_ADDR:-127.0.0.1}:${COMPUTE_PORT:-8801}:8801"
+    # GPU access. On a host with the nvidia-container-toolkit either form works;
+    # `runtime: nvidia` is the fallback if the deploy block is ignored.
+    # runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  fp_hf_cache:

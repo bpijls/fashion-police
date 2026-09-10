@@ -1,0 +1,80 @@
+# Fashion Police — taxonomy definition (single source of truth)
+#
+# Each entry is one "class" the installation can sort a visitor into.
+#   prompt        -> FashionCLIP text description, compared against the photo (zero-shot).
+#                    Write a vivid, concrete description of the CLOTHING, not the person.
+#   display_name  -> shown on the kiosk result screen
+#   blurb         -> one line shown under the verdict
+#   accent        -> hex colour used for that class in the UI
+#
+# To change what the installation classifies people into: edit this file and
+# restart the compute + backend services. No retraining, no dataset.
+
+version: 1
+
+styles:
+  urban_streetwear:
+    display_name: "Urban Streetwear"
+    prompt: "a casual streetwear outfit with an oversized hoodie, baggy or relaxed-fit trousers, chunky sneakers and a sporty, city energy"
+    blurb: "Hoodies, sneakers, and a city pulse."
+    accent: "#e0532d"
+
+  formal_business:
+    display_name: "Formal Business"
+    prompt: "professional business attire: a tailored suit or blazer with a dress shirt, formal trousers or skirt, leather dress shoes, a polished corporate look"
+    blurb: "Tailored, pressed, and all business."
+    accent: "#2f4b7c"
+
+  casual_chic:
+    display_name: "Casual Chic"
+    prompt: "a clean modern casual outfit: well-fitted basics, neat denim or trousers, a simple top and understated shoes, styled in a polished effortless way"
+    blurb: "Simple basics, worn well."
+    accent: "#3f7d64"
+
+  sporty_athleisure:
+    display_name: "Sporty / Athleisure"
+    prompt: "an athletic athleisure look: technical leggings or joggers, a performance top or zip jacket, running shoes, gym-ready and functional"
+    blurb: "Built for movement."
+    accent: "#1f9e8f"
+
+  vintage_retro:
+    display_name: "Vintage / Retro"
+    prompt: "a nostalgic retro outfit drawn from past decades: vintage silhouettes, corduroy or wool, classic prints and patterns, thrifted character"
+    blurb: "Borrowed from another decade."
+    accent: "#b07d3a"
+
+  bohemian:
+    display_name: "Bohemian"
+    prompt: "a free-spirited bohemian style: flowing fabrics, layered loose garments, earthy natural tones, fringe, patterns and a relaxed artistic drape"
+    blurb: "Flowing fabric and earth tones."
+    accent: "#9a6b4f"
+
+  elegant_evening:
+    display_name: "Elegant Evening"
+    prompt: "sophisticated formal evening wear: a floor-length gown or a sharp tuxedo, luxurious draping fabrics, refined and glamorous"
+    blurb: "Dressed for the gala."
+    accent: "#6b3f7c"
+
+  preppy:
+    display_name: "Preppy"
+    prompt: "a classic preppy collegiate look: a polo shirt or button-down under a knit sweater or blazer, chinos or a pleated skirt, loafers, clean and neat"
+    blurb: "Collegiate and crisp."
+    accent: "#3a6ea5"
+
+  punk_alt:
+    display_name: "Punk / Alt"
+    prompt: "an edgy alternative punk outfit: a leather or denim jacket with studs and patches, ripped black jeans, band tee, heavy boots, a rebellious attitude"
+    blurb: "Leather, studs, and attitude."
+    accent: "#8a2b3a"
+
+  gothic:
+    display_name: "Gothic"
+    prompt: "a dark gothic aesthetic: all-black clothing, layered lace, velvet or Victorian-influenced tailoring, dramatic silhouettes, silver hardware"
+    blurb: "All black, all drama."
+    accent: "#4a3f5c"
+
+  artsy_expressive:
+    display_name: "Artsy / Expressive"
+    prompt: "a creative artistic outfit: unconventional layered pieces, bold clashing colours and prints, handmade or sculptural garments, individual expression"
+    blurb: "Rules optional."
+    accent: "#c65d97"

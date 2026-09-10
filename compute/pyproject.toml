@@ -1,0 +1,41 @@
+[project]
+name = "fashion-police-compute"
+version = "0.1.0"
+description = "Fashion Police compute tier: SegFormer clothing segmentation + FashionCLIP zero-shot style scoring"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "python-multipart>=0.0.12",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "pyyaml>=6.0",
+    "pillow>=10.4",
+    "numpy>=1.26",
+    "torch>=2.4",
+    "torchvision>=0.19",
+    "transformers>=4.44",
+    "huggingface-hub>=0.24",
+    "safetensors>=0.4.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "httpx>=0.27",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.uv]
+# torch CPU wheels for local dev; the container overrides with a CUDA base image.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+torchvision = [{ index = "pytorch-cpu" }]

@@ -1,0 +1,47 @@
+# ── reference checkouts (not part of this repo) ────────────────
+/studio-rai-group-project-HX1R/
+/fp2/
+
+# ── secrets & local config ────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── model weights / caches — never commit models ──────────────
+models/
+*.pt
+*.pth
+*.onnx
+*.joblib
+*.safetensors
+*.gguf
+*.bin
+.cache/
+**/hf_cache/
+
+# ── python ────────────────────────────────────────────────────
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# ── node / frontend ───────────────────────────────────────────
+node_modules/
+dist/
+build/
+.vite/
+
+# ── runtime data ──────────────────────────────────────────────
+/backend/data/
+/backend/*.sqlite
+/backend/*.sqlite3
+*.log
+
+# ── editors / os ──────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*~
